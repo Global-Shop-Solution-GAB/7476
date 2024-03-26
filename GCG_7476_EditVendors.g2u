@@ -1,0 +1,432 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.EditVendors..Create(BaseForm)
+Gui.EditVendors..Caption("Edit Vendors")
+Gui.EditVendors..Size(1024,720)
+Gui.EditVendors..MinX(0)
+Gui.EditVendors..MinY(0)
+Gui.EditVendors..Position(0,0)
+Gui.EditVendors..AlwaysOnTop(False)
+Gui.EditVendors..FontName("Tahoma")
+Gui.EditVendors..FontSize(8.25)
+Gui.EditVendors..ControlBox(True)
+Gui.EditVendors..MaxButton(True)
+Gui.EditVendors..MinButton(True)
+Gui.EditVendors..MousePointer(0)
+Gui.EditVendors..Moveable(True)
+Gui.EditVendors..Sizeable(True)
+Gui.EditVendors..ShowInTaskBar(True)
+Gui.EditVendors..TitleBar(True)
+Gui.EditVendors..Event(UnLoad,EditVendors_UnLoad)
+Gui.EditVendors.GsGcVendors.Create(GsGridControl)
+Gui.EditVendors.GsGcVendors.Enabled(True)
+Gui.EditVendors.GsGcVendors.Visible(True)
+Gui.EditVendors.GsGcVendors.Zorder(0)
+Gui.EditVendors.GsGcVendors.Size(1010,625)
+Gui.EditVendors.GsGcVendors.Position(7,53)
+Gui.EditVendors.GsGcVendors.Event(RowCellClick,GsGcVendors_RowCellClick)
+Gui.EditVendors.GsGcVendors.Anchor(15)
+Gui.EditVendors.GsGcVendors.Event(CellValueChanged,GsGcVendors_CellValueChanged)
+Gui.EditVendors.cmdSave.Create(Button)
+Gui.EditVendors.cmdSave.Enabled(False)
+Gui.EditVendors.cmdSave.Visible(True)
+Gui.EditVendors.cmdSave.Zorder(0)
+Gui.EditVendors.cmdSave.Size(131,41)
+Gui.EditVendors.cmdSave.Position(885,5)
+Gui.EditVendors.cmdSave.Caption("Save")
+Gui.EditVendors.cmdSave.FontName("Tahoma")
+Gui.EditVendors.cmdSave.FontSize(7.8)
+Gui.EditVendors.cmdSave.Anchor(9)
+Gui.EditVendors.cmdSave.Event(Click,cmdSave_Click)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+F.Intrinsic.Control.SetErrorHandler("Main")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+v.Local.sSQL.Declare
+
+' First, get all prev info
+v.Local.sSQL.Set("Select a.Vendor, b.Name_Vendor, a.ISO_Approval, a.ISO_Expiration, a.APP_Approval, a.APP_Expiration, a.Quality_Level, a.Quality_Program, a.Commodity_Code, a.Commodity_Desc, a.Risk_Factor, a.Restrictions, a.Notes from GCG_7476_VENDOR_EXP a left join V_VENDOR_MASTER b on a.Vendor = b.Vendor")
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Data.Datatable.CreateFromSQL("dtVendors", "con", v.Local.sSQL, True)
+f.ODBC.Connection!con.Close
+
+' Add column for deleting row and new flag to make saving faster
+f.Data.Datatable.AddColumn("dtVendors", "DeleteRow", "String")
+f.Data.Datatable.AddColumn("dtVendors", "NewRow", "String", "N")
+
+' Now, put prev info into grid
+gui.EditVendors.GsGcVendors.AddGridviewFromDatatable("gvVendors", "dtVendors")
+
+' Load properties, set mainview
+f.Intrinsic.Control.CallSub(loadGridProperties)
+gui.EditVendors.GsGcVendors.MainView("gvVendors")
+
+' Set context menu up for adding
+gui.EditVendors..ContextMenuCreate("ctxEditVendor")
+gui.EditVendors..ContextMenuAddItem("ctxEditVendor", "AddRow", 0, "Add new record")
+gui.EditVendors..ContextMenuSetItemEventHandler("ctxEditVendor", "AddRow", "AddNew")
+gui.EditVendors.GsGcVendors.ContextMenuAttach("ctxEditVendor")
+
+gui.EditVendors..Show
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("Main")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_EditVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.Main.End
+
+Program.Sub.EditVendors_UnLoad.Start
+f.Intrinsic.Control.If(v.DataTable.dtVendors.Exists)
+	f.Data.Datatable.Close("dtVendors")
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.End
+Program.Sub.EditVendors_UnLoad.End
+
+Program.Sub.loadGridProperties.Start
+F.Intrinsic.Control.SetErrorHandler("loadGridProperties")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+v.Local.iCnt.Declare
+v.Local.sFields.Declare
+
+' General formatting
+f.Intrinsic.String.Split(v.DataTable.dtVendors.FieldNames, "*!*", v.Local.sFields)
+f.Intrinsic.Control.For(v.Local.iCnt, 0, v.Local.sFields.UBound, 1)
+	gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderFontBold", True)
+	gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderHAlignment", "Near")
+	gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "CellHAlignment", "Near")
+	gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderBackColor", v.Color.GSS)
+	gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderForeColor", v.Color.White)
+f.Intrinsic.Control.Next(v.Local.iCnt)
+
+' Vendor
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Vendor", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Vendor", "ReadOnly", "True")
+
+' Vendor Name
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Name_Vendor", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Name_Vendor", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Name_Vendor", "Caption", "Vendor Name")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Name_Vendor", "CellForeColor",v.Color.Blue)
+
+' ISO Approval
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Approval", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Approval", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Approval", "Caption", "ISO Approval Date")
+
+' ISO Expiration
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "Caption", "ISO Expiration Date")
+
+' APP Approval
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Approval", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Approval", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Approval", "Caption", "APP Approval Date")
+
+' APP Expiration
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "Caption", "App Expiration Date")
+
+' Quality Level
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Quality_Level", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Quality_Level", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Quality_Level", "Caption", "Quality Lvl")
+
+' Quality Program
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Quality_Program", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Quality_Program", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Quality_Program", "Caption", "Quality Program")
+
+' Commodity Code
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Code", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Code", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Code", "Caption", "Commodity Code")
+
+' Commodity Description
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Desc", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Desc", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Desc", "Caption", "Comodity Description")
+
+' Risk factor
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Risk_Factor", "AllowEdit", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Risk_Factor", "ReadOnly", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Risk_Factor", "Caption", "Risk Factor")
+Gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Risk_Factor", "MinWidth", 30)
+
+' Restrictions
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Restrictions", "AllowEdit", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Restrictions", "ReadOnly", "False")
+Gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Restrictions", "MaxLength", 100)
+
+' Notes
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Notes", "AllowEdit", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "Notes", "ReadOnly", "False")
+
+' Delete row
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "DeleteRow", "ReadOnly", "True")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "DeleteRow", "AllowEdit", "False")
+Gui.EditVendors.GsGcVendors.ColumnEdit("gvVendors", "DeleteRow", "EditorButton", "Delete Row")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "DeleteRow", "Caption", " ")
+
+' NewRow
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "NewRow", "Visible", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "NewRow", "AllowShowHide", "False")
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("loadGridProperties")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_EditVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.loadGridProperties.End
+
+Program.Sub.GsGcVendors_RowCellClick.Start
+F.Intrinsic.Control.SetErrorHandler("GsGcVendors_RowCellClick")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+V.Local.sSql.Declare(String)
+V.Local.sTitle.Declare(String)
+V.Local.sWidth.Declare(String)
+V.Local.sRet.Declare(String)
+v.Local.sTempDate.Declare(String)
+V.Local.bEdit.Declare(Boolean,False)
+V.Local.bView.Declare(Boolean,False)
+V.Local.sVendor.Declare(String)
+v.Local.iCnt.Declare
+
+' Select case for row - if delete, delete the row
+F.Intrinsic.Control.SelectCase(V.Args.Column.UCase)
+	F.Intrinsic.Control.Case("DELETEROW")
+		F.Data.Datatable.DeleteRow("dtVendors",V.Args.RowIndex)
+		' Enable save
+		gui.EditVendors.cmdSave.Enabled(True)
+	f.Intrinsic.Control.Case("COMMODITY_CODE")
+		' Launch commodity code browser
+		v.Local.sSql.Set("Select Commodity_Code, Commodity_Desc, Inactive_Flag from GCG_7476_COMM_CODES where Inactive_Flag = 'N'")
+		v.Local.sTitle.Set("Commodity Code*!*Commodity Desc*!*Inactive Flag")
+		v.Local.sWidth.Set("500*!*2000*!*100")
+		
+		F.Intrinsic.String.Split(V.Local.sTitle,"*!*",V.Local.sTitle)
+		F.Intrinsic.String.Split(V.Local.sWidth,"*!*",V.Local.sWidth)
+		
+		f.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+		f.ODBC.Connection!con.OpenCompanyConnection
+		f.Intrinsic.UI.Browser("Select Commodity Code", "con", v.Local.sSql, v.Local.sTitle, v.Local.sWidth, 8000, 8000, v.Local.sRet)
+		f.ODBC.Connection!con.Close
+		
+		F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	    	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	    	f.Data.Datatable.SetValue("dtVendors", v.Args.RowIndex, "Commodity_Code", v.Local.sRet(0)!FieldValTrim, "Commodity_Desc", v.Local.sRet(1)!FieldValTrim)
+	    	
+	    	' Enable save button
+	    	gui.EditVendors.cmdSave.Enabled(True)
+		F.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Case("VENDOR")
+		' Launch vendor browser
+		v.Local.sSql.Set("Select a.Vendor, a.Name_Vendor, b.ISO_Cert_Date, b.Approved_Sup_Dt from V_VENDOR_MASTER a left join V_VENDOR_ADDL b on a.Vendor = b.Vendor")
+		v.Local.sTitle.Set("Vendor*!*Vendor Name*!*ISO Certification Date*!*Approved Supplier Date")
+		v.Local.sWidth.Set("500*!*2000*!*1000*!*1000")
+		
+		F.Intrinsic.String.Split(V.Local.sTitle,"*!*",V.Local.sTitle)
+		F.Intrinsic.String.Split(V.Local.sWidth,"*!*",V.Local.sWidth)
+		
+		f.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+		f.ODBC.Connection!con.OpenCompanyConnection
+		f.Intrinsic.UI.Browser("Select Vendor", "con", v.Local.sSql, v.Local.sTitle, v.Local.sWidth, 8000, 8000, v.Local.sRet)
+		f.ODBC.Connection!con.Close
+		
+		F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	    	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	    	' Make sure Vendor has not already been chosen
+	    	f.Intrinsic.Control.For(v.Local.iCnt, 0, v.DataTable.dtVendors.RowCount--, 1)
+	    		f.Intrinsic.Control.If(v.DataTable.dtVendors(v.Local.iCnt).Vendor!FieldVal, =, v.Local.sRet(0))
+	    			f.Intrinsic.UI.Msgbox("Vendor already tied to a commodity code.")
+	    			f.Intrinsic.Control.ExitSub
+	    		f.Intrinsic.Control.EndIf
+	    	f.Intrinsic.Control.Next(v.Local.iCnt)
+	    	' If not, set data
+	    	f.Data.Datatable.SetValue("dtVendors", v.Args.RowIndex, "Vendor", v.Local.sRet(0)!FieldValTrim, "Name_Vendor", v.Local.sRet(1)!FieldValTrim)
+	    	' Check dates
+	    	v.Local.sTempDate.Set("1/1/1900 12:00:00 AM")
+	    	f.Intrinsic.Control.If(v.Local.sRet(2), <>, v.Local.sTempDate)
+	    		f.Data.Datatable.SetValue("dtVendors", v.Args.RowIndex, "ISO_Approval", v.Local.sRet(2)!FieldValDate)
+	    	f.Intrinsic.Control.EndIf
+	    	f.Intrinsic.Control.If(v.Local.sRet(3), <>, v.Local.sTempDate)
+	    		f.Data.Datatable.SetValue("dtVendors", v.Args.RowIndex, "APP_Approval", v.Local.sRet(3)!FieldValDate)
+	    	f.Intrinsic.Control.EndIf
+	    	' Enable save button
+	    	gui.EditVendors.cmdSave.Enabled(True)
+		F.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Case("QUALITY_LEVEL")
+		' Launch quality code browser
+		v.Local.sSql.Set("Select Quality_Code, Quality_Desc from GCG_7476_QUAL_CODES where Inactive_Flag = 'N'")
+		v.Local.sTitle.Set("Quality Code*!*Quality Description")
+		v.Local.sWidth.Set("500*!*2000")
+		
+		F.Intrinsic.String.Split(V.Local.sTitle,"*!*",V.Local.sTitle)
+		F.Intrinsic.String.Split(V.Local.sWidth,"*!*",V.Local.sWidth)
+		
+		f.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+		f.ODBC.Connection!con.OpenCompanyConnection
+		f.Intrinsic.UI.Browser("Select Quality Code", "con", v.Local.sSql, v.Local.sTitle, v.Local.sWidth, 8000, 8000, v.Local.sRet)
+		f.ODBC.Connection!con.Close
+		
+		F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	    	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	    	f.Data.Datatable.SetValue("dtVendors", v.Args.RowIndex, "Quality_Level", v.Local.sRet(0)!FieldValTrim, "Quality_Program", v.Local.sRet(1)!FieldValTrim)
+	    	' Enable save button
+	    	gui.EditVendors.cmdSave.Enabled(True)
+		F.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Case("NAME_VENDOR")
+		' Hyperlink to vendor header
+		v.Local.sVendor.Set(v.DataTable.dtVendors(v.Args.RowIndex).Vendor!FieldVal)
+		F.Global.Security.CheckUserAccessIPM(2,1,V.Local.bEdit)
+		F.Global.Security.CheckUserAccessIPM(3,0,V.Local.bView)
+		F.Intrinsic.Control.If(V.Local.bEdit)
+		    F.Global.Callwrapper.New("Vend","Accounting.AccountsPayable.VendorMaintenanceOpenVendor")
+		    F.Global.Callwrapper.SetProperty("Vend","VendorNumber",V.Local.sVendor)
+		    F.Global.CallWrapper.Run("Vend")
+		F.Intrinsic.Control.Else
+		    F.Intrinsic.Control.If(V.Local.bView)
+		        F.Global.Callwrapper.New("Vend","Accounting.AccountsPayable.VendorMaintenanceViewVendor")
+		        F.Global.Callwrapper.SetProperty("Vend","VendorNumber",V.Local.sVendor)
+		        F.Global.CallWrapper.Run("Vend")
+		    F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndSelect
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("GsGcVendors_RowCellClick")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_EditVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.GsGcVendors_RowCellClick.End
+
+Program.Sub.cmdSave_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdSave_Click")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+v.Local.iCnt.Declare
+
+' Make sure all required fields are filled in
+f.Data.DataView.Create("dtVendors", "dvNewRows", 22, "NewRow = 'Y'",)
+f.Intrinsic.Control.For(v.Local.iCnt, 0, v.DataView.dtVendors!dvNewRows.RowCount--, 1)
+	f.Intrinsic.Control.If(v.DataView.dtVendors!dvNewRows(v.Local.iCnt).Vendor!FieldValTrim, =, "")
+		f.Intrinsic.UI.Msgbox("Vendor required for all rows.")
+		f.Data.DataView.Close("dtVendors", "dvNewRows")
+		f.Intrinsic.Control.ExitSub
+	f.Intrinsic.Control.ElseIf(v.DataView.dtVendors!dvNewRows(v.Local.iCnt).Quality_Level!FieldValTrim, =, "")
+		f.Intrinsic.UI.Msgbox("Quality Lvl required for all rows.")
+		f.Data.DataView.Close("dtVendors", "dvNewRows")
+		f.Intrinsic.Control.ExitSub
+	f.Intrinsic.Control.ElseIf(v.DataView.dtVendors!dvNewRows(v.Local.iCnt).Commodity_Code!FieldValTrim, =, "")
+		f.Intrinsic.UI.Msgbox("Commodity Code required for all rows.")
+		f.Data.DataView.Close("dtVendors", "dvNewRows")
+		f.Intrinsic.Control.ExitSub
+	f.Intrinsic.Control.EndIf
+f.Intrinsic.Control.Next(v.Local.iCnt)
+
+' Close DV if passed all tests
+f.Data.DataView.Close("dtVendors", "dvNewRows")
+
+' Save to DB with mode 7 for allowing add, modify, and delete. Not saving DeleteRow
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Data.Datatable.SaveToDB("dtVendors", "con", "GCG_7476_VENDOR_EXP", "Vendor", 7,"Vendor@!@Vendor*!*ISO_Approval@!@ISO_Approval*!*ISO_Expiration@!@ISO_Expiration*!*APP_Approval@!@APP_Approval*!*APP_Expiration@!@APP_Expiration*!*Quality_Level@!@Quality_Level*!*Quality_Program@!@Quality_Program*!*Commodity_Code@!@Commodity_Code*!*Commodity_Desc@!@Commodity_Desc*!*Risk_Factor@!@Risk_Factor*!*Restrictions@!@Restrictions*!*Notes@!@Notes")
+f.Data.Datatable.AcceptChanges("dtVendors")
+f.ODBC.Connection!con.Close
+
+f.Intrinsic.UI.Msgbox("Info saved")
+gui.EditVendors.cmdSave.Enabled(False)
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("cmdSave_Click")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_EditVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.AddNew.Start
+F.Intrinsic.Control.SetErrorHandler("AddNew")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+' Add new row
+f.Data.Datatable.AddRow("dtVendors", "NewRow", "Y")
+
+' Enable save
+gui.EditVendors.cmdSave.Enabled(True)
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("AddNew")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_EditVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.AddNew.End
+
+Program.Sub.GsGcVendors_CellValueChanged.Start
+F.Intrinsic.Control.SetErrorHandler("GsGcVendors_CellValueChanged")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+' Enable save
+gui.EditVendors.cmdSave.Enabled(True)
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("GsGcVendors_CellValueChanged")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_EditVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.GsGcVendors_CellValueChanged.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8819.26349$}$1
+${$6$}$jmeyer$}$20240326172641843$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNgeETsgsP8OeSsYY8f/XgRpm/qsVVqGmiVU=
+Program.Sub.Comments.End
