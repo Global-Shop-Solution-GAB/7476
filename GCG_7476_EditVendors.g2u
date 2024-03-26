@@ -131,8 +131,8 @@ gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Approval", "Allo
 gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Approval", "Caption", "ISO Approval Date")
 
 ' ISO Expiration
-gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "ReadOnly", "True")
-gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "ReadOnly", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "AllowEdit", "True")
 gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Expiration", "Caption", "ISO Expiration Date")
 
 ' APP Approval
@@ -141,8 +141,8 @@ gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Approval", "Allo
 gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Approval", "Caption", "APP Approval Date")
 
 ' APP Expiration
-gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "ReadOnly", "True")
-gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "AllowEdit", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "ReadOnly", "False")
+gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "AllowEdit", "True")
 gui.EditVendors.GsGcVendors.SetColumnProperty("gvVendors", "APP_Expiration", "Caption", "App Expiration Date")
 
 ' Quality Level
@@ -428,5 +428,5 @@ Program.Sub.GsGcVendors_CellValueChanged.End
 
 Program.Sub.Comments.Start
 ${$5$}$20.1.8819.26349$}$1
-${$6$}$jmeyer$}$20240326172641843$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNgeETsgsP8OeSsYY8f/XgRpm/qsVVqGmiVU=
+${$6$}$jmeyer$}$20240326174732615$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNgfc1aOi8XYm/4nbQ7g17T/ur3gOO1ZOrp4=
 Program.Sub.Comments.End
