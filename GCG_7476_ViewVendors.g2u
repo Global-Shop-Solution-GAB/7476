@@ -1,0 +1,314 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.Vendors..Create(BaseForm)
+Gui.Vendors..Caption("Vendor Approvals")
+Gui.Vendors..Size(1184,715)
+Gui.Vendors..MinX(0)
+Gui.Vendors..MinY(0)
+Gui.Vendors..Position(0,0)
+Gui.Vendors..AlwaysOnTop(False)
+Gui.Vendors..FontName("Tahoma")
+Gui.Vendors..FontSize(8.25)
+Gui.Vendors..ControlBox(True)
+Gui.Vendors..MaxButton(True)
+Gui.Vendors..MinButton(True)
+Gui.Vendors..MousePointer(0)
+Gui.Vendors..Moveable(True)
+Gui.Vendors..Sizeable(True)
+Gui.Vendors..ShowInTaskBar(True)
+Gui.Vendors..TitleBar(True)
+Gui.Vendors..Event(UnLoad,Vendors_UnLoad)
+Gui.Vendors.GsGcVendors.Create(GsGridControl)
+Gui.Vendors.GsGcVendors.Enabled(True)
+Gui.Vendors.GsGcVendors.Visible(True)
+Gui.Vendors.GsGcVendors.Zorder(0)
+Gui.Vendors.GsGcVendors.Size(1171,674)
+Gui.Vendors.GsGcVendors.Position(6,6)
+Gui.ExportForm..Create(BaseForm)
+Gui.ExportForm..Caption("Select Location For File Export")
+Gui.ExportForm..Size(378,133)
+Gui.ExportForm..MinX(0)
+Gui.ExportForm..MinY(0)
+Gui.ExportForm..Position(0,0)
+Gui.ExportForm..AlwaysOnTop(False)
+Gui.ExportForm..FontName("Tahoma")
+Gui.ExportForm..FontSize(8.25)
+Gui.ExportForm..ControlBox(True)
+Gui.ExportForm..MaxButton(True)
+Gui.ExportForm..MinButton(True)
+Gui.ExportForm..MousePointer(0)
+Gui.ExportForm..Moveable(True)
+Gui.ExportForm..Sizeable(True)
+Gui.ExportForm..ShowInTaskBar(True)
+Gui.ExportForm..TitleBar(True)
+Gui.ExportForm..Event(UnLoad,ExportForm_UnLoad)
+Gui.ExportForm.lblExport.Create(Label,"Save file to:",True,58,13,0,11,21,True,0,"Tahoma",8.25,,0,0)
+Gui.ExportForm.lblExport.BorderStyle(0)
+Gui.ExportForm.txtFilePath.Create(TextBox,"",True,325,20,0,9,39,True,0,"Tahoma",8.25,,1)
+Gui.ExportForm.cmdBrowseFiles.Create(Button)
+Gui.ExportForm.cmdBrowseFiles.Enabled(True)
+Gui.ExportForm.cmdBrowseFiles.Visible(True)
+Gui.ExportForm.cmdBrowseFiles.Zorder(0)
+Gui.ExportForm.cmdBrowseFiles.Size(27,23)
+Gui.ExportForm.cmdBrowseFiles.Position(341,37)
+Gui.ExportForm.cmdBrowseFiles.Caption("^")
+Gui.ExportForm.cmdBrowseFiles.FontName("Tahoma")
+Gui.ExportForm.cmdBrowseFiles.FontSize(8.25)
+Gui.ExportForm.cmdBrowseFiles.Event(Click,cmdBrowseFiles_Click)
+Gui.ExportForm.cmdOkay.Create(Button)
+Gui.ExportForm.cmdOkay.Enabled(True)
+Gui.ExportForm.cmdOkay.Visible(True)
+Gui.ExportForm.cmdOkay.Zorder(0)
+Gui.ExportForm.cmdOkay.Size(50,23)
+Gui.ExportForm.cmdOkay.Position(10,69)
+Gui.ExportForm.cmdOkay.Caption("Ok")
+Gui.ExportForm.cmdOkay.FontName("Tahoma")
+Gui.ExportForm.cmdOkay.FontSize(8.25)
+Gui.ExportForm.cmdOkay.Event(Click,cmdOkay_Click)
+Gui.ExportForm.cmdCancel.Create(Button)
+Gui.ExportForm.cmdCancel.Enabled(True)
+Gui.ExportForm.cmdCancel.Visible(True)
+Gui.ExportForm.cmdCancel.Zorder(0)
+Gui.ExportForm.cmdCancel.Size(50,23)
+Gui.ExportForm.cmdCancel.Position(67,69)
+Gui.ExportForm.cmdCancel.Caption("Cancel")
+Gui.ExportForm.cmdCancel.FontName("Tahoma")
+Gui.ExportForm.cmdCancel.FontSize(8.25)
+Gui.ExportForm.cmdCancel.Event(Click,ExportForm_UnLoad)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sFilePath.Declare
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+
+F.Intrinsic.Control.SetErrorHandler("Main")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+v.Local.sSQL.Declare
+
+' Create datatable
+v.Local.sSQL.Set("Select a.Vendor, b.Name_Vendor, c.ISO_Status, c.Approved_Suppl, a.Quality_Level, a.Commodity_Code, a.Commodity_Desc, a.Risk_Factor, a.Restrictions, a.Notes from GCG_7476_VENDOR_EXP a left join V_VENDOR_MASTER b on a.Vendor = b.Vendor left join V_VENDOR_ADDL c on a.Vendor = c.Vendor")
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Data.Datatable.CreateFromSQL("dtVendors", "con", v.Local.sSQL, True)
+f.ODBC.Connection!con.Close
+
+' Add gridview, format properties
+gui.Vendors.GsGcVendors.AddGridviewFromDatatable("gvVendors", "dtVendors")
+f.Intrinsic.Control.CallSub(loadGridProperties)
+gui.Vendors.GsGcVendors.MainView("gvVendors")
+
+' Set up context menu for exporting
+gui.Vendors..ContextMenuCreate("ctxVendor")
+gui.Vendors..ContextMenuAddItem("ctxVendor", "SaveToExcel", 0, "Export to Excel")
+gui.Vendors..ContextMenuSetItemEventHandler("ctxVendor", "SaveToExcel", "SaveToXLSX")
+gui.Vendors.GsGcVendors.ContextMenuAttach("ctxVendor")
+
+' Show
+gui.Vendors..Show
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("Main")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_ViewVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.Main.End
+
+Program.Sub.loadGridProperties.Start
+F.Intrinsic.Control.SetErrorHandler("loadGridProperties")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+v.Local.iCnt.Declare
+v.Local.sFields.Declare
+
+f.Intrinsic.String.Split(v.DataTable.dtVendors.FieldNames, "*!*", v.Local.sFields)
+f.Intrinsic.Control.For(v.Local.iCnt, 0, v.Local.sFields.UBound, 1)
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderFontBold", True)
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "Visible", True)
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "ReadOnly", True)
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "AllowEdit", False)
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderHAlignment", "Near")
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "CellHAlignment", "Near")
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderBackColor", v.Color.GSS)
+	gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", v.Local.sFields(v.Local.iCnt), "HeaderForeColor", v.Color.White)
+f.Intrinsic.Control.Next(v.Local.iCnt)
+
+' Captions
+gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", "Name_Vendor", "Caption", "Vendor Name")
+gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", "ISO_Status", "Caption", "Certification Status")
+gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", "Approved_Suppl", "Caption", "Vendor Approved")
+gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", "Quality_Level", "Caption", "Quality Level")
+gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Code", "Caption", "Commodity Code")
+gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", "Commodity_Desc", "Caption", "Comodity Description")
+gui.Vendors.GsGcVendors.SetColumnProperty("gvVendors", "Risk_Factor", "Caption", "Risk Factor")
+
+' Formatting
+Gui.Vendors.GsGcVendors.AddStyleFormatCondition("gvVendors","Approved_Suppl","ParentRed","NotEqual","Y")
+Gui.Vendors.GsGcVendors.SetStyleFormatConditionProperty("gvVendors","Approved_Suppl","ParentRed","BackColor","#fd6464")
+Gui.Vendors.GsGcVendors.AddStyleFormatCondition("gvVendors","ISO_Status","ParentRed2","NotEqual","Y")
+Gui.Vendors.GsGcVendors.SetStyleFormatConditionProperty("gvVendors","ISO_Status","ParentRed2","BackColor","#fd6464")
+Gui.Vendors.GsGcVendors.AddStyleFormatCondition("gvVendors","Approved_Suppl","ParentGreen","Equal","Y")
+Gui.Vendors.GsGcVendors.SetStyleFormatConditionProperty("gvVendors","Approved_Suppl","ParentGreen","BackColor","#64fd64")
+Gui.Vendors.GsGcVendors.AddStyleFormatCondition("gvVendors","ISO_Status","ParentGreen2","Equal","Y")
+Gui.Vendors.GsGcVendors.SetStyleFormatConditionProperty("gvVendors","ISO_Status","ParentGreen2","BackColor","#64fd64")
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("loadGridProperties")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_ViewVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.loadGridProperties.End
+
+Program.Sub.SaveToXLSX.Start
+F.Intrinsic.Control.SetErrorHandler("SaveToXLSX")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+gui.ExportForm..Show
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("SaveToXLSX")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_ViewVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.SaveToXLSX.End
+
+Program.Sub.cmdBrowseFiles_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdBrowseFiles_Click")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+V.Local.sRet.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare
+v.Local.sDate.Declare
+F.Intrinsic.Control.If(V.Caller.GlobalDir.Right1,=,"\")
+	F.Intrinsic.String.Build("{0}Custom",V.Caller.GlobalDir,V.Global.sFilePath)
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Build("{0}\Custom",V.Caller.GlobalDir,V.Global.sFilePath)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.File.DirExists(V.Global.sFilePath,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists.Not)
+	F.Intrinsic.File.CreateDir(V.Global.sFilePath)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Build("{0}\7476",V.Global.sFilePath,V.Global.sFilePath)
+F.Intrinsic.File.DirExists(V.Global.sFilePath,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists.Not)
+	F.Intrinsic.File.CreateDir(V.Global.sFilePath)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Format(v.Ambient.Date,"MMDDYY",V.Local.sDate)
+
+F.Intrinsic.String.Build("{0}{1}VendorApproval.xlsx", V.Local.sDate,V.Caller.CompanyCode, V.Local.sFile)
+
+Function.Intrinsic.UI.ShowSaveFileDialog(V.Local.sFile,"", v.Global.sFilePath,V.Local.sRet)
+F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	Gui.ExportForm.txtFilePath.Text(V.Local.sRet)
+F.Intrinsic.Control.EndIf
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("cmdBrowseFiles_Click")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_ViewVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.cmdBrowseFiles_Click.End
+
+Program.Sub.ExportForm_UnLoad.Start
+gui.ExportForm..Visible(False)
+Program.Sub.ExportForm_UnLoad.End
+
+Program.Sub.cmdOkay_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdOkay_Click")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+v.Local.sConfirmation.Declare
+v.Local.sDate.Declare
+
+' Get file path
+f.Intrinsic.Control.If(V.Screen.ExportForm!txtFilePath.Text, <>, "")
+	V.Global.sFilePath.Set(V.Screen.ExportForm!txtFilePath.Text)
+f.Intrinsic.Control.Else
+	F.Intrinsic.String.Format(v.Ambient.Date,"MMDDYY",V.Local.sDate)
+	f.Intrinsic.String.Build("{0}\CUSTOM\7476\{1}{2}VendorApproval.xlsx", v.Caller.GlobalDir, v.Local.sDate, v.Caller.CompanyCode, v.Global.sFilePath)
+f.Intrinsic.Control.EndIf
+
+' Close form
+gui.ExportForm..Visible(False)
+
+' Export
+gui.Vendors.GsGcVendors.Export(v.Global.sFilePath, "XLSX")
+f.Intrinsic.String.Build("File saved to: {0}", v.Global.sFilePath, v.Local.sConfirmation)
+f.Intrinsic.UI.Msgbox(v.Local.sConfirmation, "Success")
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("cmdOkay_Click")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_ViewVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+Program.Sub.cmdOkay_Click.End
+
+Program.Sub.Vendors_UnLoad.Start
+F.Intrinsic.Control.SetErrorHandler("Vendors_UnLoad")
+F.Intrinsic.Control.ClearErrors
+V.Local.sError.Declare(String,"")
+
+
+f.Intrinsic.Control.If(v.DataTable.dtVendors.Exists)
+	f.Data.Datatable.Close("dtVendors")
+f.Intrinsic.Control.EndIf
+f.Intrinsic.Control.End
+
+
+' Exit sub if finished running with no errors
+F.Intrinsic.Control.ExitSub
+' Error handling stuff
+F.Intrinsic.Control.Label("Vendors_UnLoad")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_7476_ViewVendors {0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+Program.Sub.Vendors_UnLoad.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8819.26349$}$1
+${$6$}$jmeyer$}$20240326165932053$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNgeSEG40I6HcACspPDy1De7iE+wXaoLpWgo=
+Program.Sub.Comments.End
