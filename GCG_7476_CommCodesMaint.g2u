@@ -1,0 +1,235 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.CommCodesMaint..Create(BaseForm)
+Gui.CommCodesMaint..Caption("Commodity Codes Maintenance")
+Gui.CommCodesMaint..Size(634,140)
+Gui.CommCodesMaint..MinX(0)
+Gui.CommCodesMaint..MinY(0)
+Gui.CommCodesMaint..Position(0,0)
+Gui.CommCodesMaint..AlwaysOnTop(False)
+Gui.CommCodesMaint..FontName("Tahoma")
+Gui.CommCodesMaint..FontSize(8.25)
+Gui.CommCodesMaint..ControlBox(True)
+Gui.CommCodesMaint..MaxButton(True)
+Gui.CommCodesMaint..MinButton(True)
+Gui.CommCodesMaint..MousePointer(0)
+Gui.CommCodesMaint..Moveable(True)
+Gui.CommCodesMaint..Sizeable(True)
+Gui.CommCodesMaint..ShowInTaskBar(True)
+Gui.CommCodesMaint..TitleBar(True)
+Gui.CommCodesMaint..Event(UnLoad,CommCodesMaint_UnLoad)
+Gui.CommCodesMaint.txtCommDesc.Create(TextBox,"",True,358,20,0,177,36,True,0,"Tahoma",8.25,,1)
+Gui.CommCodesMaint.txtCommDesc.MaxLength(100)
+Gui.CommCodesMaint.txtCommDesc.TabStop(True)
+Gui.CommCodesMaint.txtCommDesc.TabIndex(2)
+Gui.CommCodesMaint.ddlInactive.Create(DropDownList)
+Gui.CommCodesMaint.ddlInactive.Enabled(True)
+Gui.CommCodesMaint.ddlInactive.Visible(True)
+Gui.CommCodesMaint.ddlInactive.Zorder(0)
+Gui.CommCodesMaint.ddlInactive.Size(82,20)
+Gui.CommCodesMaint.ddlInactive.Position(546,36)
+Gui.CommCodesMaint.ddlInactive.FontName("Tahoma")
+Gui.CommCodesMaint.ddlInactive.FontSize(8.25)
+Gui.CommCodesMaint.ddlInactive.TabStop(True)
+Gui.CommCodesMaint.ddlInactive.TabIndex(3)
+Gui.CommCodesMaint.lblCommCode.Create(Label,"Commodity Code",True,81,13,0,42,20,True,0,"Tahoma",8.25,,0,0)
+Gui.CommCodesMaint.lblCommCode.BorderStyle(0)
+Gui.CommCodesMaint.lblCommDesc.Create(Label,"Commodity Code Description",True,137,13,0,288,20,True,0,"Tahoma",8.25,,0,0)
+Gui.CommCodesMaint.lblCommDesc.BorderStyle(0)
+Gui.CommCodesMaint.lblInactive.Create(Label,"Inactive",True,39,13,0,566,20,True,0,"Tahoma",8.25,,0,0)
+Gui.CommCodesMaint.lblInactive.BorderStyle(0)
+Gui.CommCodesMaint.cmdSave.Create(Button)
+Gui.CommCodesMaint.cmdSave.Enabled(True)
+Gui.CommCodesMaint.cmdSave.Visible(True)
+Gui.CommCodesMaint.cmdSave.Zorder(0)
+Gui.CommCodesMaint.cmdSave.Size(119,34)
+Gui.CommCodesMaint.cmdSave.Position(509,71)
+Gui.CommCodesMaint.cmdSave.Caption("Save")
+Gui.CommCodesMaint.cmdSave.FontName("Tahoma")
+Gui.CommCodesMaint.cmdSave.FontSize(8.25)
+Gui.CommCodesMaint.cmdSave.Event(Click,cmdSave_Click)
+Gui.CommCodesMaint.cmdLookup.Create(Button)
+Gui.CommCodesMaint.cmdLookup.Enabled(True)
+Gui.CommCodesMaint.cmdLookup.Visible(True)
+Gui.CommCodesMaint.cmdLookup.Zorder(0)
+Gui.CommCodesMaint.cmdLookup.Size(23,20)
+Gui.CommCodesMaint.cmdLookup.Position(142,36)
+Gui.CommCodesMaint.cmdLookup.Caption("^")
+Gui.CommCodesMaint.cmdLookup.FontName("Tahoma")
+Gui.CommCodesMaint.cmdLookup.FontSize(8.25)
+Gui.CommCodesMaint.cmdLookup.Event(Click,cmdLookup_Click)
+Gui.CommCodesMaint.txtCommCode.Create(TextBox,"",True,134,20,0,6,36,True,0,"Tahoma",8.25,,1)
+Gui.CommCodesMaint.txtCommCode.MaxLength(20)
+Gui.CommCodesMaint.txtCommCode.TabStop(True)
+Gui.CommCodesMaint.txtCommCode.TabIndex(1)
+Gui.CommCodesMaint.lookupCommCodes.Create(Lookup)
+Gui.CommCodesMaint.lookupCommCodes.Enabled(True)
+Gui.CommCodesMaint.lookupCommCodes.PopulateMode(4)
+Gui.CommCodesMaint.lookupCommCodes.Title("GSS Lookup")
+Gui.CommCodesMaint.lookupCommCodes.StringBasis("")
+Gui.CommCodesMaint.lookupCommCodes.FileBasis("")
+Gui.CommCodesMaint.lookupCommCodes.ColumnDelim("")
+Gui.CommCodesMaint.lookupCommCodes.RowDelim("")
+Gui.CommCodesMaint.lookupCommCodes.PreferredStyle(1)
+Gui.CommCodesMaint.lookupCommCodes.Event(SelectionMade,lookupCommCodes_SelectionMade)
+Gui.CommCodesMaint.lookupCommCodes.Event(RefreshRequested,lookupCommCodes_RefreshRequested)
+Gui.RecordExists..Create(BaseForm)
+Gui.RecordExists..Caption("Overwrite Save?")
+Gui.RecordExists..Size(463,199)
+Gui.RecordExists..MinX(0)
+Gui.RecordExists..MinY(0)
+Gui.RecordExists..Position(0,0)
+Gui.RecordExists..AlwaysOnTop(False)
+Gui.RecordExists..FontName("Tahoma")
+Gui.RecordExists..FontSize(8.25)
+Gui.RecordExists..ControlBox(True)
+Gui.RecordExists..MaxButton(True)
+Gui.RecordExists..MinButton(True)
+Gui.RecordExists..MousePointer(0)
+Gui.RecordExists..Moveable(True)
+Gui.RecordExists..Sizeable(True)
+Gui.RecordExists..ShowInTaskBar(True)
+Gui.RecordExists..TitleBar(True)
+Gui.RecordExists..Event(UnLoad,RecordExists_UnLoad)
+Gui.RecordExists.lblWarning.Create(Label,"This commodity code already exists. Would you like to save this info over the old record?",True,425,13,0,18,39,True,0,"Tahoma",8.6,,0,0)
+Gui.RecordExists.lblWarning.BorderStyle(0)
+Gui.RecordExists.cmdYes.Create(Button)
+Gui.RecordExists.cmdYes.Enabled(True)
+Gui.RecordExists.cmdYes.Visible(True)
+Gui.RecordExists.cmdYes.Zorder(0)
+Gui.RecordExists.cmdYes.Size(108,39)
+Gui.RecordExists.cmdYes.Position(95,90)
+Gui.RecordExists.cmdYes.Caption("Yes")
+Gui.RecordExists.cmdYes.FontName("Tahoma")
+Gui.RecordExists.cmdYes.FontSize(8.25)
+Gui.RecordExists.cmdYes.Event(Click,cmdYes_Click)
+Gui.RecordExists.cmdNo.Create(Button)
+Gui.RecordExists.cmdNo.Enabled(True)
+Gui.RecordExists.cmdNo.Visible(True)
+Gui.RecordExists.cmdNo.Zorder(0)
+Gui.RecordExists.cmdNo.Size(108,39)
+Gui.RecordExists.cmdNo.Position(242,90)
+Gui.RecordExists.cmdNo.Caption("No")
+Gui.RecordExists.cmdNo.FontName("Tahoma")
+Gui.RecordExists.cmdNo.FontSize(8.25)
+Gui.RecordExists.cmdNo.Event(Click,cmdNo_Click)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+v.Global.bExists.Declare
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+' Set up dropdown
+gui.CommCodesMaint.ddlInactive.AddItem("N", 0)
+gui.CommCodesMaint.ddlInactive.AddItem("Y", 1)
+
+' Set up lookup
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Data.Datatable.CreateFromSQL("dtCodes", "con", "Select Commodity_Code, Commodity_Desc, Inactive_Flag from GCG_7476_COMM_CODES", True)
+f.ODBC.Connection!con.Close
+gui.CommCodesMaint.lookupCommCodes.DataTableBasis("dtCodes")
+
+' Show screen
+gui.CommCodesMaint..Show
+
+Program.Sub.Main.End
+
+Program.Sub.CommCodesMaint_UnLoad.Start
+f.Intrinsic.Control.End
+Program.Sub.CommCodesMaint_UnLoad.End
+
+Program.Sub.cmdLookup_Click.Start
+gui.CommCodesMaint.lookupCommCodes.Show()
+Program.Sub.cmdLookup_Click.End
+
+Program.Sub.lookupCommCodes_SelectionMade.Start
+' Close dt
+f.Data.Datatable.Close("dtCodes")
+' Set textboxes
+gui.CommCodesMaint.txtCommCode.Text(v.DataTable.lookupCommCodes_Result(0).Commodity_Code!FieldValTrim)
+gui.CommCodesMaint.txtCommDesc.Text(v.DataTable.lookupCommCodes_Result(0).Commodity_Desc!FieldValTrim)
+gui.CommCodesMaint.ddlInactive.Text(v.DataTable.lookupCommCodes_Result(0).Inactive_Flag!FieldValTrim)
+Program.Sub.lookupCommCodes_SelectionMade.End
+
+Program.Sub.lookupCommCodes_RefreshRequested.Start
+F.Intrinsic.Control.If(V.DataTable.dtCodes.Exists)
+	F.Data.Datatable.Close("dtCodes")
+F.Intrinsic.Control.EndIf
+
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Data.Datatable.CreateFromSQL("dtCodes", "con", "Select Commodity_Code, Commodity_Desc, Inactive_Flag from GCG_7476_COMM_CODES", True)
+f.ODBC.Connection!con.Close
+gui.CommCodesMaint.lookupCommCodes.DataTableBasis("dtCodes")
+Program.Sub.lookupCommCodes_RefreshRequested.End
+
+Program.Sub.cmdSave_Click.Start
+v.Local.sSQL.Declare
+v.Local.sReturnRow.Declare
+v.Local.sCommCode.Declare
+
+' Get comm code, set to ucase
+v.Local.sCommCode.Set(v.Screen.CommCodesMaint!txtCommCode.Text)
+v.Local.sCommCode.Set(v.Local.sCommCode.UCase)
+
+' See if record exists for that comm code
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Intrinsic.String.Build("Select * from GCG_7476_COMM_CODES where Commodity_Code = '{0}'", v.Local.sCommCode, v.Local.sSQL)
+f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL, v.Local.sReturnRow)
+v.Global.bExists.Set(v.Ambient.ExecuteAndReturnEOF)
+v.Global.bExists.Set(v.Global.bExists.Not) ' Ambient var: true means nothing was returned, false means there was a row... flipping to make more sense
+f.ODBC.Connection!con.Close
+
+f.Intrinsic.Control.If(v.Global.bExists)
+	gui.RecordExists..Show()
+	f.Intrinsic.Control.ExitSub
+f.Intrinsic.Control.Else
+	f.Intrinsic.Control.CallSub(SaveRecord)
+f.Intrinsic.Control.EndIf
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.cmdYes_Click.Start
+f.Intrinsic.Control.CallSub(SaveRecord)
+gui.RecordExists..Visible(False)
+Program.Sub.cmdYes_Click.End
+
+Program.Sub.cmdNo_Click.Start
+gui.RecordExists..Visible(False)
+Program.Sub.cmdNo_Click.End
+
+Program.Sub.SaveRecord.Start
+v.Local.sSQL.Declare
+v.Local.sCommCode.Declare
+
+v.Local.sCommCode.Set(v.Screen.CommCodesMaint!txtCommCode.Text)
+v.Local.sCommCode.Set(v.Local.sCommCode.UCase)
+
+f.ODBC.Connection!con.OpenCompanyConnection
+
+f.Intrinsic.Control.If(v.Global.bExists)
+	' Update statement
+	f.Intrinsic.String.Build("Update GCG_7476_COMM_CODES set Commodity_Desc = '{0}', Inactive_Flag = '{1}' where Commodity_Code = '{2}'", v.Screen.CommCodesMaint!txtCommDesc.Text, v.Screen.CommCodesMaint!ddlInactive.Text, v.Local.sCommCode, v.Local.sSQL)
+	f.ODBC.Connection!con.Execute(v.Local.sSQL)
+f.Intrinsic.Control.Else
+	f.Intrinsic.String.Build("Insert into GCG_7476_COMM_CODES (Commodity_Code, Commodity_Desc, Inactive_Flag) values ('{0}', '{1}', '{2}')", v.Local.sCommCode, v.Screen.CommCodesMaint!txtCommDesc.Text, v.Screen.CommCodesMaint!ddlInactive.Text, v.Local.sSQL)
+	f.ODBC.Connection!con.Execute(v.Local.sSQL)
+f.Intrinsic.Control.EndIf
+
+f.ODBC.Connection!con.Close
+
+' Tear down screen
+gui.RecordExists..Visible(False)
+gui.CommCodesMaint.txtCommCode.Text("")
+gui.CommCodesMaint.txtCommDesc.Text("")
+gui.CommCodesMaint.ddlInactive.ClearSelected()
+Program.Sub.SaveRecord.End
+
+Program.Sub.RecordExists_UnLoad.Start
+gui.RecordExists..Visible(False)
+Program.Sub.RecordExists_UnLoad.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8819.26349$}$1
+${$6$}$jmeyer$}$20240325145642618$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNgfiupInoEaosiRHwV7JXDyTHCxIiE+NyIs=
+Program.Sub.Comments.End
