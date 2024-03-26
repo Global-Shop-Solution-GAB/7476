@@ -1,0 +1,246 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.QualCodesMaint..Create(BaseForm)
+Gui.QualCodesMaint..Caption("Quality Codes Maintenance")
+Gui.QualCodesMaint..Size(634,140)
+Gui.QualCodesMaint..MinX(0)
+Gui.QualCodesMaint..MinY(0)
+Gui.QualCodesMaint..Position(0,0)
+Gui.QualCodesMaint..AlwaysOnTop(False)
+Gui.QualCodesMaint..FontName("Tahoma")
+Gui.QualCodesMaint..FontSize(8.25)
+Gui.QualCodesMaint..ControlBox(True)
+Gui.QualCodesMaint..MaxButton(True)
+Gui.QualCodesMaint..MinButton(True)
+Gui.QualCodesMaint..MousePointer(0)
+Gui.QualCodesMaint..Moveable(True)
+Gui.QualCodesMaint..Sizeable(True)
+Gui.QualCodesMaint..ShowInTaskBar(True)
+Gui.QualCodesMaint..TitleBar(True)
+Gui.QualCodesMaint..Event(UnLoad,QualCodesMaint_UnLoad)
+Gui.QualCodesMaint.txtQualDesc.Create(TextBox,"",True,358,24,0,177,36,True,0,"Tahoma",8.25,,1)
+Gui.QualCodesMaint.txtQualDesc.MaxLength(100)
+Gui.QualCodesMaint.txtQualDesc.TabStop(True)
+Gui.QualCodesMaint.txtQualDesc.TabIndex(2)
+Gui.QualCodesMaint.ddlInactive.Create(DropDownList)
+Gui.QualCodesMaint.ddlInactive.Enabled(True)
+Gui.QualCodesMaint.ddlInactive.Visible(True)
+Gui.QualCodesMaint.ddlInactive.Zorder(0)
+Gui.QualCodesMaint.ddlInactive.Size(82,20)
+Gui.QualCodesMaint.ddlInactive.Position(546,36)
+Gui.QualCodesMaint.ddlInactive.FontName("Tahoma")
+Gui.QualCodesMaint.ddlInactive.FontSize(8.25)
+Gui.QualCodesMaint.ddlInactive.TabStop(True)
+Gui.QualCodesMaint.ddlInactive.TabIndex(3)
+Gui.QualCodesMaint.lblQualCode.Create(Label,"Quality Code",True,78,17,0,42,20,True,0,"Tahoma",8.25,,0,0)
+Gui.QualCodesMaint.lblQualCode.BorderStyle(0)
+Gui.QualCodesMaint.lblQualDesc.Create(Label,"Quality Code Description",True,150,17,0,288,20,True,0,"Tahoma",8.25,,0,0)
+Gui.QualCodesMaint.lblQualDesc.BorderStyle(0)
+Gui.QualCodesMaint.lblInactive.Create(Label,"Inactive",True,48,17,0,566,20,True,0,"Tahoma",8.25,,0,0)
+Gui.QualCodesMaint.lblInactive.BorderStyle(0)
+Gui.QualCodesMaint.cmdSave.Create(Button)
+Gui.QualCodesMaint.cmdSave.Enabled(True)
+Gui.QualCodesMaint.cmdSave.Visible(True)
+Gui.QualCodesMaint.cmdSave.Zorder(0)
+Gui.QualCodesMaint.cmdSave.Size(119,34)
+Gui.QualCodesMaint.cmdSave.Position(509,67)
+Gui.QualCodesMaint.cmdSave.Caption("Save")
+Gui.QualCodesMaint.cmdSave.FontName("Tahoma")
+Gui.QualCodesMaint.cmdSave.FontSize(8.25)
+Gui.QualCodesMaint.cmdSave.Event(Click,cmdSave_Click)
+Gui.QualCodesMaint.cmdLookup.Create(Button)
+Gui.QualCodesMaint.cmdLookup.Enabled(True)
+Gui.QualCodesMaint.cmdLookup.Visible(True)
+Gui.QualCodesMaint.cmdLookup.Zorder(0)
+Gui.QualCodesMaint.cmdLookup.Size(23,20)
+Gui.QualCodesMaint.cmdLookup.Position(90,36)
+Gui.QualCodesMaint.cmdLookup.Caption("^")
+Gui.QualCodesMaint.cmdLookup.FontName("Tahoma")
+Gui.QualCodesMaint.cmdLookup.FontSize(8.25)
+Gui.QualCodesMaint.cmdLookup.Event(Click,cmdLookup_Click)
+Gui.QualCodesMaint.txtQualCode.Create(TextBox,"",True,50,24,0,35,36,True,0,"Tahoma",8.25,,1)
+Gui.QualCodesMaint.txtQualCode.MaxLength(2)
+Gui.QualCodesMaint.txtQualCode.TabStop(True)
+Gui.QualCodesMaint.txtQualCode.TabIndex(1)
+Gui.QualCodesMaint.lookupQualCodes.Create(Lookup)
+Gui.QualCodesMaint.lookupQualCodes.Enabled(True)
+Gui.QualCodesMaint.lookupQualCodes.PopulateMode(4)
+Gui.QualCodesMaint.lookupQualCodes.Title("GSS Lookup")
+Gui.QualCodesMaint.lookupQualCodes.StringBasis("")
+Gui.QualCodesMaint.lookupQualCodes.FileBasis("")
+Gui.QualCodesMaint.lookupQualCodes.ColumnDelim("")
+Gui.QualCodesMaint.lookupQualCodes.RowDelim("")
+Gui.QualCodesMaint.lookupQualCodes.PreferredStyle(1)
+Gui.QualCodesMaint.lookupQualCodes.Event(SelectionMade,lookupQualCodes_SelectionMade)
+Gui.QualCodesMaint.lookupQualCodes.Event(RefreshRequested,lookupQualCodes_RefreshRequested)
+Gui.RecordExists..Create(BaseForm)
+Gui.RecordExists..Caption("Overwrite Save?")
+Gui.RecordExists..Size(463,199)
+Gui.RecordExists..MinX(0)
+Gui.RecordExists..MinY(0)
+Gui.RecordExists..Position(0,0)
+Gui.RecordExists..AlwaysOnTop(False)
+Gui.RecordExists..FontName("Tahoma")
+Gui.RecordExists..FontSize(8.25)
+Gui.RecordExists..ControlBox(True)
+Gui.RecordExists..MaxButton(True)
+Gui.RecordExists..MinButton(True)
+Gui.RecordExists..MousePointer(0)
+Gui.RecordExists..Moveable(True)
+Gui.RecordExists..Sizeable(True)
+Gui.RecordExists..ShowInTaskBar(True)
+Gui.RecordExists..TitleBar(True)
+Gui.RecordExists..Event(UnLoad,RecordExists_UnLoad)
+Gui.RecordExists.lblWarning.Create(Label,"This commodity code already exists. Would you like to save this info over the old record?",True,425,13,0,18,39,True,0,"Tahoma",8.6,,0,0)
+Gui.RecordExists.lblWarning.BorderStyle(0)
+Gui.RecordExists.cmdYes.Create(Button)
+Gui.RecordExists.cmdYes.Enabled(True)
+Gui.RecordExists.cmdYes.Visible(True)
+Gui.RecordExists.cmdYes.Zorder(0)
+Gui.RecordExists.cmdYes.Size(108,39)
+Gui.RecordExists.cmdYes.Position(95,90)
+Gui.RecordExists.cmdYes.Caption("Yes")
+Gui.RecordExists.cmdYes.FontName("Tahoma")
+Gui.RecordExists.cmdYes.FontSize(8.25)
+Gui.RecordExists.cmdYes.Event(Click,cmdYes_Click)
+Gui.RecordExists.cmdNo.Create(Button)
+Gui.RecordExists.cmdNo.Enabled(True)
+Gui.RecordExists.cmdNo.Visible(True)
+Gui.RecordExists.cmdNo.Zorder(0)
+Gui.RecordExists.cmdNo.Size(108,39)
+Gui.RecordExists.cmdNo.Position(242,90)
+Gui.RecordExists.cmdNo.Caption("No")
+Gui.RecordExists.cmdNo.FontName("Tahoma")
+Gui.RecordExists.cmdNo.FontSize(8.25)
+Gui.RecordExists.cmdNo.Event(Click,cmdNo_Click)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+v.Global.bExists.Declare
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+' Set up dropdown
+gui.QualCodesMaint.ddlInactive.AddItem("N", 0)
+gui.QualCodesMaint.ddlInactive.AddItem("Y", 1)
+
+' Set up lookup
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Data.Datatable.CreateFromSQL("dtCodes", "con", "Select Quality_Code, Quality_Desc, Inactive_Flag from GCG_7476_QUAL_CODES", True)
+f.ODBC.Connection!con.Close
+gui.QualCodesMaint.lookupQualCodes.DataTableBasis("dtCodes")
+
+' Show screen
+gui.QualCodesMaint..Show
+
+Program.Sub.Main.End
+
+Program.Sub.QualCodesMaint_UnLoad.Start
+f.Intrinsic.Control.End
+Program.Sub.QualCodesMaint_UnLoad.End
+
+Program.Sub.cmdLookup_Click.Start
+gui.QualCodesMaint.lookupQualCodes.Show()
+Program.Sub.cmdLookup_Click.End
+
+Program.Sub.lookupQualCodes_SelectionMade.Start
+' Close dt
+'f.Data.Datatable.Close("dtCodes")
+' Set textboxes
+gui.QualCodesMaint.txtQualCode.Text(v.DataTable.lookupQualCodes_Result(0).Quality_Code!FieldValTrim)
+gui.QualCodesMaint.txtQualDesc.Text(v.DataTable.lookupQualCodes_Result(0).Quality_Desc!FieldValTrim)
+gui.QualCodesMaint.ddlInactive.Text(v.DataTable.lookupQualCodes_Result(0).Inactive_Flag!FieldValTrim)
+Program.Sub.lookupQualCodes_SelectionMade.End
+
+Program.Sub.lookupQualCodes_RefreshRequested.Start
+F.Intrinsic.Control.If(V.DataTable.dtCodes.Exists)
+	F.Data.Datatable.Close("dtCodes")
+F.Intrinsic.Control.EndIf
+
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Data.Datatable.CreateFromSQL("dtCodes", "con", "Select Quality_Code, Quality_Desc, Inactive_Flag from GCG_7476_QUAL_CODES", True)
+f.ODBC.Connection!con.Close
+gui.QualCodesMaint.lookupQualCodes.DataTableBasis("dtCodes")
+Program.Sub.lookupQualCodes_RefreshRequested.End
+
+Program.Sub.cmdSave_Click.Start
+v.Local.sSQL.Declare
+v.Local.sReturnRow.Declare
+v.Local.sQualCode.Declare
+
+' Get comm code, set to ucase
+v.Local.sQualCode.Set(v.Screen.QualCodesMaint!txtQualCode.Text)
+v.Local.sQualCode.Set(v.Local.sQualCode.UCase)
+
+' See if record exists for that comm code
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Intrinsic.String.Build("Select * from GCG_7476_QUAL_CODES where Quality_Code = '{0}'", v.Local.sQualCode, v.Local.sSQL)
+f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL, v.Local.sReturnRow)
+v.Global.bExists.Set(v.Ambient.ExecuteAndReturnEOF)
+v.Global.bExists.Set(v.Global.bExists.Not) ' Ambient var: true means nothing was returned, false means there was a row... flipping to make more sense
+f.ODBC.Connection!con.Close
+
+f.Intrinsic.Control.If(v.Global.bExists)
+	gui.RecordExists..Show()
+	f.Intrinsic.Control.ExitSub
+f.Intrinsic.Control.Else
+	f.Intrinsic.Control.CallSub(SaveRecord)
+f.Intrinsic.Control.EndIf
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.cmdYes_Click.Start
+f.Intrinsic.Control.CallSub(SaveRecord)
+gui.RecordExists..Visible(False)
+Program.Sub.cmdYes_Click.End
+
+Program.Sub.cmdNo_Click.Start
+gui.RecordExists..Visible(False)
+Program.Sub.cmdNo_Click.End
+
+Program.Sub.SaveRecord.Start
+v.Local.sSQL.Declare
+v.Local.sQualCode.Declare
+v.Local.iRecordNo.Declare
+
+v.Local.sQualCode.Set(v.Screen.QualCodesMaint!txtQualCode.Text)
+v.Local.sQualCode.Set(v.Local.sQualCode.UCase)
+
+f.ODBC.Connection!con.OpenCompanyConnection
+
+f.Intrinsic.Control.If(v.Global.bExists)
+	' Update statement
+	f.Intrinsic.String.Build("Update GCG_7476_QUAL_CODES set Quality_Desc = '{0}', Inactive_Flag = '{1}' where Quality_Code = '{2}'", v.Screen.QualCodesMaint!txtQualDesc.Text, v.Screen.QualCodesMaint!ddlInactive.Text, v.Local.sQualCode, v.Local.sSQL)
+	f.ODBC.Connection!con.Execute(v.Local.sSQL)
+f.Intrinsic.Control.Else
+	' Get next record_no
+	f.ODBC.Connection!con.ExecuteAndReturn("Select Record_Nbr from GCG_7476_QUAL_CODES order by Record_Nbr DESC LIMIT 1", v.Local.iRecordNo)
+	f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF)
+		' No record... must be first saved record
+		v.Local.iRecordNo.Set(1)	
+	f.Intrinsic.Control.Else
+		' Record, increment and use for new
+		f.Intrinsic.Math.Add(v.Local.iRecordNo, 1, v.Local.iRecordNo)
+	f.Intrinsic.Control.EndIf
+	
+	f.Intrinsic.String.Build("Insert into GCG_7476_QUAL_CODES (Record_Nbr, Quality_Code, Quality_Desc, Inactive_Flag) values ({0}, '{1}', '{2}', '{3}')", v.Local.iRecordNo, v.Local.sQualCode, v.Screen.QualCodesMaint!txtQualDesc.Text, v.Screen.QualCodesMaint!ddlInactive.Text, v.Local.sSQL)
+	f.ODBC.Connection!con.Execute(v.Local.sSQL)
+f.Intrinsic.Control.EndIf
+
+f.ODBC.Connection!con.Close
+
+' Tear down screen
+gui.RecordExists..Visible(False)
+gui.QualCodesMaint.txtQualCode.Text("")
+gui.QualCodesMaint.txtQualDesc.Text("")
+gui.QualCodesMaint.ddlInactive.ClearSelected()
+Program.Sub.SaveRecord.End
+
+Program.Sub.RecordExists_UnLoad.Start
+gui.RecordExists..Visible(False)
+Program.Sub.RecordExists_UnLoad.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8819.26349$}$1
+${$6$}$jmeyer$}$20240319110708825$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8jiQiQ0Ql3D10P9h24g5C+mfwf33ZX4W2H7w3nBVcZkI=
+Program.Sub.Comments.End
