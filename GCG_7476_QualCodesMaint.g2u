@@ -173,6 +173,12 @@ v.Local.sQualCode.Declare
 v.Local.sQualCode.Set(v.Screen.QualCodesMaint!txtQualCode.Text)
 v.Local.sQualCode.Set(v.Local.sQualCode.UCase)
 
+' Make sure qual code is entered
+f.Intrinsic.Control.If(v.Local.sQualCode, =, "")
+	f.Intrinsic.UI.Msgbox("No quality code entered/selected.")
+	f.Intrinsic.Control.ExitSub
+f.Intrinsic.Control.EndIf
+
 ' See if record exists for that comm code
 f.ODBC.Connection!con.OpenCompanyConnection
 f.Intrinsic.String.Build("Select * from GCG_7476_QUAL_CODES where Quality_Code = '{0}'", v.Local.sQualCode, v.Local.sSQL)
@@ -242,5 +248,5 @@ Program.Sub.RecordExists_UnLoad.End
 
 Program.Sub.Comments.Start
 ${$5$}$20.1.8819.26349$}$1
-${$6$}$jmeyer$}$20240319110708825$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8jiQiQ0Ql3D10P9h24g5C+mfwf33ZX4W2H7w3nBVcZkI=
+${$6$}$jmeyer$}$20240327145643894$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNge6m3vHzou+vc5dfTZcsKouDZ8SdmOJM/U=
 Program.Sub.Comments.End
