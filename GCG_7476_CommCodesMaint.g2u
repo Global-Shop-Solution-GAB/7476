@@ -173,6 +173,12 @@ v.Local.sCommCode.Declare
 v.Local.sCommCode.Set(v.Screen.CommCodesMaint!txtCommCode.Text)
 v.Local.sCommCode.Set(v.Local.sCommCode.UCase)
 
+' Make sure comm code is chosen
+f.Intrinsic.Control.If(v.Local.sCommCode, =, "")
+	f.Intrinsic.UI.Msgbox("No commodity code entered/selected.")
+	f.Intrinsic.Control.ExitSub
+f.Intrinsic.Control.EndIf
+
 ' See if record exists for that comm code
 f.ODBC.Connection!con.OpenCompanyConnection
 f.Intrinsic.String.Build("Select * from GCG_7476_COMM_CODES where Commodity_Code = '{0}'", v.Local.sCommCode, v.Local.sSQL)
@@ -231,5 +237,5 @@ Program.Sub.RecordExists_UnLoad.End
 
 Program.Sub.Comments.Start
 ${$5$}$20.1.8819.26349$}$1
-${$6$}$jmeyer$}$20240325145642618$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNgfiupInoEaosiRHwV7JXDyTHCxIiE+NyIs=
+${$6$}$jmeyer$}$20240327145737045$}$d5tDAckeVf9hIIUlD3v0rklo78E9+3l8X3zmGL/vNge6m3vHzou+vZRLGtoWy/3o/d1hbrc+KDE=
 Program.Sub.Comments.End
